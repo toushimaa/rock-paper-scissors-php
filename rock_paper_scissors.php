@@ -21,8 +21,6 @@ Backlog:
 - refactor into OOP
 - refactor: getMove() as one function to handle both Player and Computer input
 - refactor: printMove() to display their move 'Player/Computer has played Rock/Paper/Scissors!'
-- feat: round counter
-feature request: Displaying the played moves "Player wins by using Rock|Paper|Scissors over Computer's Rock|Paper|Scissors|"
 */
 
 // Constants
@@ -31,6 +29,7 @@ const DIVIDER = "---------------------------------------------------------------
 // Variables
 $playerScore = 0;
 $computerScore = 0;
+$roundCount = 1;
 $playAgain = true;
 
 // Print the welcome message for Rock, Paper, Scissors
@@ -56,7 +55,7 @@ function getPlayerMove(string $input): ?string {
             echo "You have played Scissors!". PHP_EOL;
             break;
         default:
-            echo "Invalid input! Skipping this round." . PHP_EOL;
+            echo "Invalid input! Restarting this round." . PHP_EOL;
             return null;
     }
     return $input;
@@ -116,8 +115,9 @@ function updateScore(string $winner, int &$playerScore, int &$computerScore): vo
 }
 
 // 6. Score tally
-function showScoreboard(int $playerScore, int $computerScore): void {
+function showScoreboard(int $playerScore, int $computerScore, int $roundCount): void {
     echo DIVIDER;
+    echo "--- Round {$roundCount} ---" . PHP_EOL;
     echo "Player score: {$playerScore}" . PHP_EOL;
     echo "Computer score: {$computerScore}" . PHP_EOL;
 }
@@ -125,7 +125,7 @@ function showScoreboard(int $playerScore, int $computerScore): void {
 // 7. Ask player if they still want to play
 function askPlayerIfContinue(): bool {
     echo DIVIDER;
-    echo "Do you want to keep playing? (Y/n): ";
+    echo "Do you want to keep playing? Enter 'Y' to start another round: ";
     $userInput = strtoupper(trim(readline()));
     return $userInput === 'Y';
 }
@@ -142,6 +142,7 @@ printWelcomeMessage();
 
 do{
     // 2.
+    echo "Round: {$roundCount}" . PHP_EOL;
     echo "Enter your move (R/P/S): ";
     $playerInput = getPlayerMove(readline());
     if ($playerInput === null) continue;
@@ -156,11 +157,12 @@ do{
     updateScore($winner, $playerScore, $computerScore);
 
     // 6.
-    showScoreboard($playerScore, $computerScore);
+    showScoreboard($playerScore, $computerScore, $roundCount);
 
     // 7.
     $playAgain = askPlayerIfContinue();
-    
+    $roundCount++;
+
 } while($playAgain);
 
 printGoodbyeMessage();
