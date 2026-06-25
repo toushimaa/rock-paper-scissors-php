@@ -41,45 +41,35 @@ function printWelcomeMessage(): void {
     echo DIVIDER;
 }
 
-// Player's turn
-function getPlayerMove(string $input): ?string {
-    $input = strtoupper(trim($input));
-    switch ($input) {
-        case 'R':
-            echo "You have played Rock!". PHP_EOL;
-            break;
-        case 'P':
-            echo "You have played Paper!". PHP_EOL;
-            break;
-        case 'S':
-            echo "You have played Scissors!". PHP_EOL;
-            break;
-        default:
-            echo "Invalid input! Restarting this round." . PHP_EOL;
-            return null;
+// Getting an entity's move
+function getMove(int|string $entityInput): ?string {
+    if (is_int($entityInput)) {
+        // For translating computer's moves
+        $moveMap = [
+            1 => 'R',
+            2 => 'P',
+            3 => 'S',
+        ];
+        return $moveMap[$entityInput] ?? null;
     }
-    return $input;
+
+    $entityInput = strtoupper(trim($entityInput));
+    $moveSet = ['R', 'P', 'S'];
+    return in_array($entityInput, $moveSet, true) ? $entityInput : null;
 }
 
-// Computer's turn
-function getComputerMove(int $input): string {
-    switch ($input) {
-        case 1:
-            echo "Computer played Rock!" . PHP_EOL;
-            return 'R';
-        case 2:
-            echo "Computer played Paper!" . PHP_EOL;
-            return 'P';
-        case 3:
-            echo "Computer played Scissors!" . PHP_EOL;
-            return 'S';
-        default:
-            throw new Exception("Error: Computer unexpectedly didn't play anything :("); // For debugging
-    }
+// Printing the entity's move
+function printMove(string $entity, string $move): string {
+    $moveMap = [
+        'R' => 'Rock',
+        'P' => 'Paper',
+        'S' => 'Scissors',
+    ];
+    return "{$entity} played {$moveMap[$move]}!" . PHP_EOL;
 }
 
 // 4. Game result
-function determineWinner(string $playerInput, string $computerInput): string {
+function determineWinner(string $playerMove, string $computerMove): string {
 
     // Defining what is the win condition for each moves
     $winningMoves = [
@@ -88,12 +78,12 @@ function determineWinner(string $playerInput, string $computerInput): string {
         'S' => 'P', // Scissors beats Paper
     ];
 
-    if ($playerInput === $computerInput) {
+    if ($playerMove === $computerMove) {
         echo "It's a tie!" . PHP_EOL;
         return 'tie';
     }
 
-    else if ($winningMoves[$playerInput] === $computerInput) {
+    else if ($winningMoves[$playerMove] === $computerMove) {
         echo "Player wins the round!" . PHP_EOL;
         return 'player';
     }
@@ -123,11 +113,8 @@ function showScoreboard(int $playerScore, int $computerScore, int $roundCount): 
 }
 
 // 7. Ask player if they still want to play
-function askPlayerIfContinue(): bool {
-    echo DIVIDER;
-    echo "Do you want to keep playing? Enter 'Y' to start another round: ";
-    $userInput = strtoupper(trim(readline()));
-    return $userInput === 'Y';
+function askPlayerIfContinue(string $userInput): bool {
+    return strtoupper(trim($userInput)) === 'Y';
 }
 
 // 8. Goodbye message when they want to quit
@@ -144,14 +131,19 @@ do{
     // 2.
     echo "Round: {$roundCount}" . PHP_EOL;
     echo "Enter your move (R/P/S): ";
-    $playerInput = getPlayerMove(readline());
-    if ($playerInput === null) continue;
+    $playerMove = getMove(readline());
+    if ($playerMove === null) {
+        echo "Invalid input! Restarting this round." . PHP_EOL;
+        continue;
+    }
+    echo printMove("Player", $playerMove);
 
     // 3.
-    $computerInput = getComputerMove(mt_rand(1, 3));
+    $computerMove = getMove(mt_rand(1, 3));
+    echo printMove("Computer", $computerMove);
 
     // 4.
-    $winner = determineWinner($playerInput, $computerInput);
+    $winner = determineWinner($playerMove, $computerMove);
 
     // 5.
     updateScore($winner, $playerScore, $computerScore);
@@ -160,7 +152,9 @@ do{
     showScoreboard($playerScore, $computerScore, $roundCount);
 
     // 7.
-    $playAgain = askPlayerIfContinue();
+    echo DIVIDER;
+    echo "Do you want to keep playing? Enter 'Y' to start another round: ";
+    $playAgain = askPlayerIfContinue(readline());
     $roundCount++;
 
 } while($playAgain);
