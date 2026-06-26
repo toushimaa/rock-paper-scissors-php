@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-use PHPUNIT\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
 define('RPS_TESTING', true);
 require_once __DIR__ . '/../rock_paper_scissors.php';
@@ -66,19 +66,19 @@ class GameTest extends TestCase
     }
     public function testAskPlayerIfContinueAcceptsUppercaseY()
     {
-        $this->assertSame(true, askPlayerIfContinue('Y'));
+        $this->assertTrue(askPlayerIfContinue('Y'));
     }
     public function testAskPlayerIfContinueAcceptsLowercaseY()
     {
-        $this->assertSame(true, askPlayerIfContinue('y'));
+        $this->assertTrue(askPlayerIfContinue('y'));
     }
     public function testAskPlayerIfContinueRejectsAnythingElse()
     {
-        $this->assertSame(false, askPlayerIfContinue('n'));
-        $this->assertSame(false, askPlayerIfContinue('x'));
+        $this->assertFalse(askPlayerIfContinue('n'));
+        $this->assertFalse(askPlayerIfContinue('x'));
     }
     public function testAskPlayerIfContinueTrimsWhitespace()
     {
-        $this->assertSame(true, askPlayerIfContinue('  y   '));
+        $this->assertTrue(askPlayerIfContinue('  y   '));
     }
 }
