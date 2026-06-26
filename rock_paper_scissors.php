@@ -68,7 +68,7 @@ function getMove(int|string $entityInput): ?string {
 
 // Printing the entity's move
 function printMove(string $entity, string $move): string {
-    return "{$entity} played {MOVE_NAMES[$move]}!" . PHP_EOL;
+    return "{$entity} played " . MOVE_NAMES[$move] . "!" . PHP_EOL;
 }
 
 // 4. Game result
