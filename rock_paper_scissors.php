@@ -124,41 +124,43 @@ function printGoodbyeMessage(): void{
     echo "Thanks for playing!" . PHP_EOL;
 }
 
-// Game loop
-// 1.
-printWelcomeMessage();
+if (!defined('RPS_TESTING')) {
+    // Game loop
+    // 1.
+    printWelcomeMessage();
 
-do{
-    // 2.
-    echo "Round: {$roundCount}" . PHP_EOL;
-    echo "Enter your move (R/P/S): ";
-    $playerMove = getMove(readline());
-    if ($playerMove === null) {
-        echo "Invalid input! Restarting this round." . PHP_EOL;
-        continue;
-    }
-    echo printMove("Player", $playerMove);
+    do{
+        // 2.
+        echo "Round: {$roundCount}" . PHP_EOL;
+        echo "Enter your move (R/P/S): ";
+        $playerMove = getMove(readline());
+        if ($playerMove === null) {
+            echo "Invalid input! Restarting this round." . PHP_EOL;
+            continue;
+        }
+        echo printMove("Player", $playerMove);
 
-    // 3.
-    $computerMove = getMove(mt_rand(1, 3));
-    echo printMove("Computer", $computerMove);
+        // 3.
+        $computerMove = getMove(mt_rand(1, 3));
+        echo printMove("Computer", $computerMove);
 
-    // 4.
-    $winner = determineWinner($playerMove, $computerMove);
-    echo showWinner($winner);
+        // 4.
+        $winner = determineWinner($playerMove, $computerMove);
+        echo showWinner($winner);
 
-    // 5.
-    updateScore($winner, $playerScore, $computerScore);
+        // 5.
+        updateScore($winner, $playerScore, $computerScore);
 
-    // 6.
-    showScoreboard($playerScore, $computerScore, $roundCount);
+        // 6.
+        showScoreboard($playerScore, $computerScore, $roundCount);
 
-    // 7.
-    echo DIVIDER;
-    echo "Do you want to keep playing? Enter 'Y' to start another round: ";
-    $playAgain = askPlayerIfContinue(readline());
-    $roundCount++;
+        // 7.
+        echo DIVIDER;
+        echo "Do you want to keep playing? Enter 'Y' to start another round: ";
+        $playAgain = askPlayerIfContinue(readline());
+        $roundCount++;
 
-} while($playAgain);
+    } while($playAgain);
 
-printGoodbyeMessage();
+    printGoodbyeMessage();
+}
