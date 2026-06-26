@@ -23,9 +23,9 @@ Backlog:
 
 // Constants
 const DIVIDER = "-------------------------------------------------------------------------" . PHP_EOL;
-const MOVE_MAP = [   
+const MOVE_MAP = [
                 1 => 'R',
-                2 => 'P',   
+                2 => 'P',
                 3 => 'S',
                 ];
 const VALID_MOVES = ['R', 'P', 'S'];
@@ -46,7 +46,7 @@ $computerScore = 0;
 $roundCount = 1;
 $playAgain = true;
 
-// Print the welcome message for Rock, Paper, Scissors
+// 1. Print the welcome message for Rock, Paper, Scissors
 function printWelcomeMessage(): void {
     echo DIVIDER;
     echo "Play rock, paper, scissors with the computer." . PHP_EOL;
@@ -55,7 +55,7 @@ function printWelcomeMessage(): void {
     echo DIVIDER;
 }
 
-// Getting an entity's move
+// 2 and 3. Getting an entity's move
 function getMove(int|string $entityInput): ?string {
     if (is_int($entityInput)) {
         // For translating computer's moves
@@ -66,30 +66,33 @@ function getMove(int|string $entityInput): ?string {
     return in_array($entityInput, VALID_MOVES, true) ? $entityInput : null;
 }
 
-// Printing the entity's move
+// 2 and 3 Printing the entity's move
 function printMove(string $entity, string $move): string {
     return "{$entity} played " . MOVE_NAMES[$move] . "!" . PHP_EOL;
 }
 
 // 4. Game result
 function determineWinner(string $playerMove, string $computerMove): string {
-
-    
-
     if ($playerMove === $computerMove) {
-        echo "It's a tie!" . PHP_EOL;
         return 'tie';
     }
 
     else if (WIN_CONDITION[$playerMove] === $computerMove) {
-        echo "Player wins the round!" . PHP_EOL;
         return 'player';
     }
     
     else {
-        echo "Computer wins the round!" . PHP_EOL;
         return 'computer';
     }
+}
+
+// 4. Show game result
+function showWinner(string $gameResult): string {
+    return match (true) {
+        $gameResult === 'tie'       => "It's a tie!" . PHP_EOL,
+        $gameResult === 'player'    => "Player wins the round!" . PHP_EOL,
+        $gameResult === 'computer'  => "Computer wins the round!" . PHP_EOL
+    };
 }
 
 // 5. Adding score to whoever won
@@ -142,6 +145,7 @@ do{
 
     // 4.
     $winner = determineWinner($playerMove, $computerMove);
+    echo showWinner($winner);
 
     // 5.
     updateScore($winner, $playerScore, $computerScore);
