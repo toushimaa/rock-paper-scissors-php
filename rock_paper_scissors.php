@@ -19,12 +19,26 @@ Program flow
 
 Backlog:
 - refactor into OOP
-- refactor: getMove() as one function to handle both Player and Computer input
-- refactor: printMove() to display their move 'Player/Computer has played Rock/Paper/Scissors!'
 */
 
 // Constants
 const DIVIDER = "-------------------------------------------------------------------------" . PHP_EOL;
+const MOVE_MAP = [   
+                1 => 'R',
+                2 => 'P',   
+                3 => 'S',
+                ];
+const VALID_MOVES = ['R', 'P', 'S'];
+const MOVE_NAMES = [
+                'R' => 'Rock',
+                'P' => 'Paper',
+                'S' => 'Scissors',
+                ];
+const WIN_CONDITION = [     // Defining what is the win condition for each moves
+                'R' => 'S', // Rock needs Scissors to win over
+                'P' => 'R', // Paper beats Rock to win
+                'S' => 'P', // Scissors beats Paper
+                ];
 
 // Variables
 $playerScore = 0;
@@ -45,45 +59,29 @@ function printWelcomeMessage(): void {
 function getMove(int|string $entityInput): ?string {
     if (is_int($entityInput)) {
         // For translating computer's moves
-        $moveMap = [
-            1 => 'R',
-            2 => 'P',
-            3 => 'S',
-        ];
-        return $moveMap[$entityInput] ?? null;
+        return MOVE_MAP[$entityInput] ?? null;
     }
 
     $entityInput = strtoupper(trim($entityInput));
-    $moveSet = ['R', 'P', 'S'];
-    return in_array($entityInput, $moveSet, true) ? $entityInput : null;
+    return in_array($entityInput, VALID_MOVES, true) ? $entityInput : null;
 }
 
 // Printing the entity's move
 function printMove(string $entity, string $move): string {
-    $moveMap = [
-        'R' => 'Rock',
-        'P' => 'Paper',
-        'S' => 'Scissors',
-    ];
-    return "{$entity} played {$moveMap[$move]}!" . PHP_EOL;
+    return "{$entity} played {MOVE_NAMES[$move]}!" . PHP_EOL;
 }
 
 // 4. Game result
 function determineWinner(string $playerMove, string $computerMove): string {
 
-    // Defining what is the win condition for each moves
-    $winningMoves = [
-        'R' => 'S', // Rock needs Scissors to win over
-        'P' => 'R', // Paper beats Rock to win
-        'S' => 'P', // Scissors beats Paper
-    ];
+    
 
     if ($playerMove === $computerMove) {
         echo "It's a tie!" . PHP_EOL;
         return 'tie';
     }
 
-    else if ($winningMoves[$playerMove] === $computerMove) {
+    else if (WIN_CONDITION[$playerMove] === $computerMove) {
         echo "Player wins the round!" . PHP_EOL;
         return 'player';
     }
