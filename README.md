@@ -1,4 +1,6 @@
 # Rock, Paper, Scissors (PHP CLI)
+![CI Status](https://github.com/toushimaa/rock-paper-scissors-php/actions/workflows/tests.yml/badge.svg)
+
 
 A command-line Rock, Paper, Scissors game built in PHP, playable against the
 computer.
