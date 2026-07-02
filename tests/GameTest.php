@@ -22,14 +22,21 @@ class GameTest extends TestCase
     {
         $this->assertSame('tie', determineWinner('R', 'R'));
     }
-    public function testGetMoveValidatesPlayerInput()
+    public function testGetPlayerInputValidity()
     {
-        $this->assertSame('R', getMove('r'));
-        $this->assertSame(null, getMove('X'));
+        $this->assertSame('R', getPlayerInput('r'));
+        $this->assertSame('P', getPlayerInput('p'));
+        $this->assertSame('S', getPlayerInput('s'));
+        $this->assertSame(null, getPlayerInput('X'));
+        $this->assertSame(null, getPlayerInput('n'));
     }
-    public function testGetMoveValidatesComputerInput()
+    public function testGetComputerInputValidity()
     {
-        $this->assertSame('P', getMove(2));
+        $computerInput = getComputerInput();
+        // Check if $computerInput is string
+        $this->assertIsString($computerInput);
+        // Check if $computerInput is one of the keys from const MOVES
+        $this->assertArrayHasKey($computerInput, MOVES);
     }
     // Learned: functions with &$param (pass by reference) must be called with a real variable, not a literal.
     // The function modifies the caller's variable directly, so there has to be a variable there to modify
@@ -66,19 +73,19 @@ class GameTest extends TestCase
     }
     public function testAskPlayerIfContinueAcceptsUppercaseY()
     {
-        $this->assertTrue(askPlayerIfContinue('Y'));
+        $this->assertTrue(wantsToPlayAgain('Y'));
     }
     public function testAskPlayerIfContinueAcceptsLowercaseY()
     {
-        $this->assertTrue(askPlayerIfContinue('y'));
+        $this->assertTrue(wantsToPlayAgain('y'));
     }
     public function testAskPlayerIfContinueRejectsAnythingElse()
     {
-        $this->assertFalse(askPlayerIfContinue('n'));
-        $this->assertFalse(askPlayerIfContinue('x'));
+        $this->assertFalse(wantsToPlayAgain('n'));
+        $this->assertFalse(wantsToPlayAgain('x'));
     }
     public function testAskPlayerIfContinueTrimsWhitespace()
     {
-        $this->assertTrue(askPlayerIfContinue('  y   '));
+        $this->assertTrue(wantsToPlayAgain('  y   '));
     }
 }
