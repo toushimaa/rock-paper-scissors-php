@@ -1,14 +1,21 @@
 # Rock, Paper, Scissors (PHP CLI)
 ![CI Status](https://github.com/toushimaa/rock-paper-scissors-php/actions/workflows/tests.yml/badge.svg)
 
-
 A command-line Rock, Paper, Scissors game built in PHP, playable against the
 computer.
 
 ## Requirements 
-- PHP 8.0+
+- [PHP 8.0+](https://php.net)
+- [Composer](https://getcomposer.org)
 
 ## Installation
+1. Clone the repository:
+```bash
+git clone https://github.com/toushimaa/rock-paper-scissors-php.git
+cd rock-paper-scissors-php
+```
+
+2. Install dependencies:
 ```bash
 composer install
 ```
