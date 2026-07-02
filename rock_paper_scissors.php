@@ -7,19 +7,23 @@ Rock, Paper, Scissors game
 --------------------------
 Program flow
 1. Show the rock paper scissors messages
-2. Get user's input
-    Log user input on what he played
+2. Get player's input
+    Log player input on what he played
 3. Get computer's input
     Log computer's input on what he played
 4. Check who won/lost or if tied
 5. Add score to winner
 6. Display scoreboard
-7. Ask if user wants to play again
-    (Y\n) for yes or no if user wants to continue, if yes loop back to the start, else close the program.
+7. Store current round's data into the array of match history
+8. Ask if player if they want to play again
+    (Y\n) for yes or no if player wants to continue, if yes loop back to the Step 2, else continue to Step 9.
+9. Show the match summary of every round played.
+10. Acknowledge player's exit
+11. Exit out of the game
 
 Backlog:
 - refactor into OOP
-- feat: match history
+    - unstaged draft: RockPaperScissorsGame.php
 */
 
 // Constants
@@ -84,18 +88,45 @@ function getScoreboard(int $playerScore, int $computerScore, int $roundCount): s
             "Computer score: {$computerScore}" . PHP_EOL;
 }
 
-// 7. Ask player if they still want to play
+// 7. Push into $matchHistory to store current round's history
+function setMatchHistory(array &$matchHistory, array $currentRoundData): void {
+    $matchHistory[] = $currentRoundData;
+}
+
+// 8. Ask player if they still want to play
 function getAskIfContinue(): string {
     return  DIVIDER .
             "Do you want to keep playing? Enter 'Y' to start another round: ";
 }
 
-// 7. Ask player if they still want to play
+// 8. Get player input if they still want to play
 function wantsToPlayAgain(string $userInput): bool {
     return strtoupper(trim($userInput)) === 'Y';
 }
 
-// 8. Goodbye message when they want to quit
+// 9. Get the summary of every round from the whole match history
+function getMatchHistorySummary(array &$matchHistory): string {
+    $completeMatchHistory = '';
+    foreach ($matchHistory as $round) {
+        $completeMatchHistory .=    "Round {$round['roundNumber']}: P: " .
+                                    MOVES[$round['playerMove']]['name'] .
+                                    " | C: " .
+                                    MOVES[$round['computerMove']]['name'] .
+                                    " | " . getWinner($round['roundWinner']) .
+                                    // "\t{$round['roundWinner']} wins! " .
+                                    "Score: {$round['playerScore']} - {$round['computerScore']}" . PHP_EOL;
+        
+                                    // {MOVES[$round['playerMove']]['name']}
+                                    // "Round {$round['roundNumber']}:
+                                    // Player: {$round['playerMove']} | 
+                                    // Computer: {$round['computerMove']}. 
+                                    // {$round['roundWinner']} won!" .
+                                    // PHP_EOL;
+    }
+    return $completeMatchHistory;
+}
+
+// 10. Goodbye message when they want to quit
 function getGoodbyeMessage(): string {
     return  DIVIDER .
             "Thanks for playing!" . PHP_EOL;
@@ -103,10 +134,13 @@ function getGoodbyeMessage(): string {
 
 if (!defined('RPS_TESTING')) {
     // Starting variables (New game)
+
     $playerScore = 0;
     $computerScore = 0;
     $roundCount = 1;
     $playAgain = true;
+    $currentRoundData = [];
+    $matchHistory = [];
 
     // Game loop
     // 1.
@@ -129,21 +163,66 @@ if (!defined('RPS_TESTING')) {
         echo getEntityMoveMessage("Computer", $computerMove);
 
         // 4.
-        $winner = determineWinner($playerMove, $computerMove);
-        echo getWinner($winner);
+        $roundWinner = determineWinner($playerMove, $computerMove);
+        echo getWinner($roundWinner);
 
         // 5.
-        updateScore($winner, $playerScore, $computerScore);
+        updateScore($roundWinner, $playerScore, $computerScore);
 
         // 6.
         echo getScoreboard($playerScore, $computerScore, $roundCount);
 
-        // 7.
+        // 7. Gather this round's data into one group of array rather than sending individual variables as parameter
+        $currentRoundData = [
+            'roundNumber'   => $roundCount,
+            'playerScore'   => $playerScore,
+            'computerScore' => $computerScore,
+            'playerMove'    => $playerMove,
+            'computerMove'  => $computerMove,
+            'roundWinner'   => $roundWinner
+        ];
+
+        // 7. Setter function to send the current round data we just packed together to be appended to the match history
+        setMatchHistory($matchHistory, $currentRoundData);
+        // Setter drafts
+        // $matchHistory[] += $currentRoundData;
+        // $matchHistory += $currentRoundData;
+        // $matchHistory[] = setMatchHistory($matchHistory[$roundCount-1]);
+        // array_push($matchHistory[$roundCount-1], $currentRoundData);
+
+        // 8.
         echo getAskIfContinue();
         $playAgain = wantsToPlayAgain(readline());
+
         $roundCount++;
 
     } while($playAgain);
 
+    echo DIVIDER;
+    // 9.
+    echo getMatchHistorySummary($matchHistory);
+    // 10.
     echo getGoodbyeMessage();
+    // 11. End of the program
+    /*
+    $matchHistory = [0] =>  ['round' => $roundCount],
+                            ['playerMove' => $playerMove],
+                            ['computerMove' => $computerMove],
+                            ['winner' => $winner]);
+                    [1] =>  ['round' => $roundCount],
+                            ['playerMove' => $playerMove],
+                            ['computerMove' => $computerMove],
+                            ['winner' => $winner]);
+    Sample output:
+    $matchHistory[0]['round'] = 1;
+    $matchHistory[0]['playerMove'] = 'S';
+    $matchHistory[0]['computerMove'] = 'P';
+    $matchHistory[0]['winner'] = 'player';
+
+    for getter example, preferably in a single line for each round played:
+    Maybe \t tabs for clean and readable indentations
+    echo "Round {$matchHistory[0]['round']}: Player $matchHistory[0]['playerMove'] | Computer: $matchHistory[0]['computerMove']. {$matchHistory[0]['winner'] wins!}" . PHP_EOL;
+    echo "Round 1: Player: Scissors | Computer: Paper. Player won! Score: 1 - 0" . PHP_EOL;
+    echo "Round 2: Player: Rock | Computer: Paper. Computer won!" . PHP_EOL;
+    */
 }
