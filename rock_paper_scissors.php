@@ -115,13 +115,6 @@ function getMatchHistorySummary(array &$matchHistory): string {
                                     " | " . getWinner($round['roundWinner']) .
                                     // "\t{$round['roundWinner']} wins! " .
                                     "Score: {$round['playerScore']} - {$round['computerScore']}" . PHP_EOL;
-        
-                                    // {MOVES[$round['playerMove']]['name']}
-                                    // "Round {$round['roundNumber']}:
-                                    // Player: {$round['playerMove']} | 
-                                    // Computer: {$round['computerMove']}. 
-                                    // {$round['roundWinner']} won!" .
-                                    // PHP_EOL;
     }
     return $completeMatchHistory;
 }
@@ -184,11 +177,6 @@ if (!defined('RPS_TESTING')) {
 
         // 7. Setter function to send the current round data we just packed together to be appended to the match history
         setMatchHistory($matchHistory, $currentRoundData);
-        // Setter drafts
-        // $matchHistory[] += $currentRoundData;
-        // $matchHistory += $currentRoundData;
-        // $matchHistory[] = setMatchHistory($matchHistory[$roundCount-1]);
-        // array_push($matchHistory[$roundCount-1], $currentRoundData);
 
         // 8.
         echo getAskIfContinue();
@@ -204,25 +192,4 @@ if (!defined('RPS_TESTING')) {
     // 10.
     echo getGoodbyeMessage();
     // 11. End of the program
-    /*
-    $matchHistory = [0] =>  ['round' => $roundCount],
-                            ['playerMove' => $playerMove],
-                            ['computerMove' => $computerMove],
-                            ['winner' => $winner]);
-                    [1] =>  ['round' => $roundCount],
-                            ['playerMove' => $playerMove],
-                            ['computerMove' => $computerMove],
-                            ['winner' => $winner]);
-    Sample output:
-    $matchHistory[0]['round'] = 1;
-    $matchHistory[0]['playerMove'] = 'S';
-    $matchHistory[0]['computerMove'] = 'P';
-    $matchHistory[0]['winner'] = 'player';
-
-    for getter example, preferably in a single line for each round played:
-    Maybe \t tabs for clean and readable indentations
-    echo "Round {$matchHistory[0]['round']}: Player $matchHistory[0]['playerMove'] | Computer: $matchHistory[0]['computerMove']. {$matchHistory[0]['winner'] wins!}" . PHP_EOL;
-    echo "Round 1: Player: Scissors | Computer: Paper. Player won! Score: 1 - 0" . PHP_EOL;
-    echo "Round 2: Player: Rock | Computer: Paper. Computer won!" . PHP_EOL;
-    */
 }
